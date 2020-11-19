@@ -78,9 +78,10 @@ public class CidadeDAOImplArq implements CidadeDAO {
     @Override
     public boolean excluir(int id) {
         lerArquivo();
-        for(int i=0; i<cidadeList.size();i++){
-            if(cidadeList.get(i).getId()==id){
-                cidadeList.remove(id);
+        for (int i=0;i<cidadeList.size();i++) {
+            Cidade c = cidadeList.get(i);
+            if(c.getId()==id){
+                cidadeList.remove(i);
                 salvarArquivo();
                 return true;
             }
@@ -103,6 +104,18 @@ public class CidadeDAOImplArq implements CidadeDAO {
     public List<Cidade> lista_do_banco() {
        lerArquivo();
        return cidadeList;
+    }
+    
+    @Override
+    public int id_disponivel(){
+        int idmax=1;
+        lerArquivo();
+        for (Cidade c : cidadeList) {
+            if(c.getId()>idmax){
+                idmax=c.getId();
+            }
+        }
+        return idmax+1;
     }
     
 }

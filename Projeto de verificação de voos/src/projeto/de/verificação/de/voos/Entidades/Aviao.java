@@ -1,6 +1,8 @@
 package projeto.de.verificação.de.voos.Entidades;
 
 import java.io.Serializable;
+import projeto.de.verificação.de.voos.Persistencia.Arquivo.AviaoDAOImplArq;
+import projeto.de.verificação.de.voos.Persistencia.AviaoDAO;
 
 /**Classe para objetos do tipo avião que serão utilizados na criação dos voos.
 * @author Victor Hugo Duarte Da Silva
@@ -8,7 +10,13 @@ import java.io.Serializable;
 public class Aviao implements Serializable {
     private int id;
     private String nome;
+    
 
+    public Aviao(){
+        AviaoDAO banco= new AviaoDAOImplArq();
+        id = banco.id_disponivel();
+    }
+    
     public int getId() {
         return id;
     }

@@ -16,4 +16,6 @@ public interface VooDAO {
     public Voo procurar_por_id(int id);
     
     public List<Voo> lista_do_banco();
+    
+    public int id_disponivel();
 }

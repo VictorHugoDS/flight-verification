@@ -80,9 +80,10 @@ public class AviaoDAOImplArq implements AviaoDAO {
     @Override
     public boolean excluir(int id) {
         lerArquivo();
-        for(int i=0; i<aviaoList.size();i++){
-            if(aviaoList.get(i).getId()==id){
-                aviaoList.remove(id);
+        for (int i=0;i<aviaoList.size();i++) {
+            Aviao c = aviaoList.get(i);
+            if(c.getId()==id){
+                aviaoList.remove(i);
                 salvarArquivo();
                 return true;
             }
@@ -107,4 +108,15 @@ public class AviaoDAOImplArq implements AviaoDAO {
         return aviaoList;
     }
     
+    @Override
+    public int id_disponivel(){
+        int idmax=1;
+        lerArquivo();
+        for (Aviao a : aviaoList) {
+            if(a.getId()>idmax){
+                idmax=a.getId();
+            }
+        }
+        return idmax+1;    
+    }
 }

@@ -77,14 +77,16 @@ public class VooDAOImplArq implements VooDAO {
     @Override
     public boolean excluir(int id) {
         lerArquivo();
-        for(int i=0; i<vooList.size();i++){
-            if(vooList.get(i).getId()==id){
-                vooList.remove(id);
+        for (int i=0;i<vooList.size();i++) {
+            Voo c = vooList.get(i);
+            if(c.getId()==id){
+                vooList.remove(i);
                 salvarArquivo();
                 return true;
             }
         }
-        return false;    }
+        return false;
+    }
 
     @Override
     public Voo procurar_por_id(int id) {
@@ -101,6 +103,18 @@ public class VooDAOImplArq implements VooDAO {
     public List<Voo> lista_do_banco() {
        lerArquivo();
        return vooList;    
+    }
+    
+    @Override
+    public int id_disponivel(){
+        int idmax=1;
+        lerArquivo();
+        for (Voo v : vooList) {
+            if(v.getId()>idmax){
+                idmax=v.getId();
+            }
+        }
+        return idmax+1;    
     }
     
 }

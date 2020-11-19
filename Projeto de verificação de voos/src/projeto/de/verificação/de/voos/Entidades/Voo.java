@@ -6,15 +6,23 @@
 package projeto.de.verificação.de.voos.Entidades;
 
 import java.io.Serializable;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
+import projeto.de.verificação.de.voos.Persistencia.Arquivo.VooDAOImplArq;
+import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 
 public class Voo implements Serializable {
     private int id;
     private Aviao aviao;
     private Cidade cidade_origem;
     private Cidade cidade_destino;
-    private GregorianCalendar data;
+    private Calendar data;
     private int duracao;
+    
+    public Voo(){
+        VooDAO banco = new VooDAOImplArq();
+        id = banco.id_disponivel();   
+        data.set(Calendar.SECOND, 0);
+    }
 
     public int getId() {
         return id;
@@ -48,11 +56,11 @@ public class Voo implements Serializable {
         this.cidade_destino = cidade_destino;
     }
 
-    public GregorianCalendar getData() {
+    public Calendar getData() {
         return data;
     }
 
-    public void setData(GregorianCalendar data) {
+    public void setData(Calendar data) {
         this.data = data;
     }
 

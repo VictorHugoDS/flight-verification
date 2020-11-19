@@ -16,4 +16,6 @@ public interface AviaoDAO {
     public Aviao procurar_por_id(int id);
     
     public List<Aviao> lista_do_banco();
+    
+    public int id_disponivel();
 }

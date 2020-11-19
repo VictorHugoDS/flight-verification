@@ -16,4 +16,6 @@ public interface CidadeDAO {
     public Cidade procurar_por_id(int id);
     
     public List<Cidade> lista_do_banco();
+    
+    public int id_disponivel();
 }
