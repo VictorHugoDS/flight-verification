@@ -13,15 +13,15 @@ import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 public class Voo implements Serializable {
     private int id;
     private Aviao aviao;
-    private Cidade cidade_origem;
-    private Cidade cidade_destino;
+    private Cidade cidade_embarque;
+    private Cidade cidade_desembarque;
     private Calendar data;
     private int duracao;
     
     public Voo(){
         VooDAO banco = new VooDAOImplArq();
         id = banco.id_disponivel();   
-        data.set(Calendar.SECOND, 0);
+        //data.set(Calendar.SECOND, 0);
     }
 
     public int getId() {
@@ -40,20 +40,20 @@ public class Voo implements Serializable {
         this.aviao = aviao;
     }
 
-    public Cidade getCidade_origem() {
-        return cidade_origem;
+    public Cidade getCidade_embarque() {
+        return cidade_embarque;
     }
 
-    public void setCidade_origem(Cidade cidade_origem) {
-        this.cidade_origem = cidade_origem;
+    public void setCidade_embarque(Cidade cidade_embarque) {
+        this.cidade_embarque = cidade_embarque;
     }
 
-    public Cidade getCidade_destino() {
-        return cidade_destino;
+    public Cidade getCidade_desembarque() {
+        return cidade_desembarque;
     }
 
-    public void setCidade_destino(Cidade cidade_destino) {
-        this.cidade_destino = cidade_destino;
+    public void setCidade_desembarque(Cidade cidade_desembarque) {
+        this.cidade_desembarque = cidade_desembarque;
     }
 
     public Calendar getData() {

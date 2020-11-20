@@ -107,6 +107,9 @@ public class VooDAOImplArq implements VooDAO {
     
     @Override
     public int id_disponivel(){
+        if(vooList.isEmpty()){
+            return 1;
+        }
         int idmax=1;
         lerArquivo();
         for (Voo v : vooList) {
