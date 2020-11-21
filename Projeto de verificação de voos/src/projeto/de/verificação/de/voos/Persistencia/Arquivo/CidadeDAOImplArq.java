@@ -108,6 +108,11 @@ public class CidadeDAOImplArq implements CidadeDAO {
     
     @Override
     public int id_disponivel(){
+        lerArquivo();
+        if(cidadeList.isEmpty()){
+            return 1;
+        }
+        
         int idmax=1;
         lerArquivo();
         for (Cidade c : cidadeList) {

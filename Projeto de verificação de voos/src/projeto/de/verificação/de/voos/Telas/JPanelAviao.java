@@ -6,17 +6,22 @@
 package projeto.de.verificação.de.voos.Telas;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import projeto.de.verificação.de.voos.Entidades.Aviao;
+import projeto.de.verificação.de.voos.Entidades.Voo;
 import projeto.de.verificação.de.voos.Persistencia.Arquivo.AviaoDAOImplArq;
+import projeto.de.verificação.de.voos.Persistencia.Arquivo.VooDAOImplArq;
 import projeto.de.verificação.de.voos.Persistencia.AviaoDAO;
+import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 
 /**
  *
  * @author rener
  */
 public class JPanelAviao extends javax.swing.JPanel {
-    private AviaoDAO banco = new AviaoDAOImplArq();
+    private VooDAO voo_banco = new VooDAOImplArq();
+    private AviaoDAO aviao_banco = new AviaoDAOImplArq();
     private int id;
     /**
      * Creates new form JPanelAviao
@@ -27,7 +32,7 @@ public class JPanelAviao extends javax.swing.JPanel {
     }
 
     private void carregarTabela(){
-        List<Aviao> lista = banco.lista_do_banco();
+        List<Aviao> lista = aviao_banco.lista_do_banco();
         DefaultTableModel modeloTabela = (DefaultTableModel) jTable.getModel();
         int qntLinhas = modeloTabela.getRowCount();
         
@@ -61,6 +66,7 @@ public class JPanelAviao extends javax.swing.JPanel {
         jLabelAvioes = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable = new javax.swing.JTable();
+        jButtonSalvar1 = new javax.swing.JButton();
 
         jTextFieldNome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,7 +115,19 @@ public class JPanelAviao extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        jTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable);
+        if (jTable.getColumnModel().getColumnCount() > 0) {
+            jTable.getColumnModel().getColumn(0).setResizable(false);
+            jTable.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        jButtonSalvar1.setText("Salvar");
+        jButtonSalvar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSalvar1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -134,7 +152,9 @@ public class JPanelAviao extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabelNome)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonSalvar1))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(89, 89, 89)
                                 .addComponent(jLabelAvioes)))))
@@ -146,8 +166,9 @@ public class JPanelAviao extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelNome))
-                .addGap(23, 23, 23)
+                    .addComponent(jLabelNome)
+                    .addComponent(jButtonSalvar1))
+                .addGap(21, 21, 21)
                 .addComponent(jLabelAvioes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -172,9 +193,9 @@ public class JPanelAviao extends javax.swing.JPanel {
             if(id!=0){
                 a.setId(id);
                 id=0;
-                banco.editar(a);
+                aviao_banco.editar(a);
             } else {
-                banco.salvar(a);
+                aviao_banco.salvar(a);
             }
         }
         jTextFieldNome.setText("");
@@ -185,27 +206,61 @@ public class JPanelAviao extends javax.swing.JPanel {
         int linha= jTable.getSelectedRow();
         if (linha!=-1){
             int id =(int) jTable.getValueAt(linha, 0);
-            jTextFieldNome.setText(""+banco.procurar_por_id(id).getNome());
+            jTextFieldNome.setText(""+aviao_banco.procurar_por_id(id).getNome());
             this.id=id;
         }
     }//GEN-LAST:event_jButtonEditActionPerformed
 
     private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
         int[] linha = jTable.getSelectedRows();
+        List<Voo> v = voo_banco.lista_do_banco();
+        boolean alerta=false;
         //System.out.println(Arrays.toString(linha));
         for (int pos: linha) {
+            boolean existe=false;
             int id = (int) jTable.getValueAt(pos, 0);
-            //System.out.println(id);
-            banco.excluir(id);
+            for (Voo v1 : v) {
+                if(v1.getAviao().getId()==id){
+                    existe=true;
+                    break;
+                }
+            }
+            if(!existe){
+                aviao_banco.excluir(id);
+            } else{
+                alerta=true;
+            }
+        }
+        if(alerta){
+            JOptionPane.showMessageDialog(null, "Não foi possivel excluir algum avião, delete o voo associado a ele antes!", "Atenção!", JOptionPane.ERROR_MESSAGE);
+
         }
         carregarTabela();
     }//GEN-LAST:event_jButtonExcluirActionPerformed
+
+    private void jButtonSalvar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvar1ActionPerformed
+        Aviao a = new Aviao();
+
+        a.setNome(jTextFieldNome.getText());
+        if (!"".equals(a.getNome())){
+            if(id!=0){
+                a.setId(id);
+                id=0;
+                aviao_banco.editar(a);
+            } else {
+                aviao_banco.salvar(a);
+            }
+        }
+        jTextFieldNome.setText("");
+        carregarTabela();
+    }//GEN-LAST:event_jButtonSalvar1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonEdit;
     private javax.swing.JButton jButtonExcluir;
     private javax.swing.JButton jButtonSalvar;
+    private javax.swing.JButton jButtonSalvar1;
     private javax.swing.JLabel jLabelAvioes;
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JScrollPane jScrollPane1;

@@ -37,9 +37,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
         carregarTabelaVoo();
         
     }
-     AviaoDAO aviaoBanco = new AviaoDAOImplArq();
-    VooDAO vooBanco = new VooDAOImplArq();
-    CidadeDAO cidadeBanco = new CidadeDAOImplArq();
+    private AviaoDAO aviaoBanco = new AviaoDAOImplArq();
+    private VooDAO vooBanco = new VooDAOImplArq();
+    private CidadeDAO cidadeBanco = new CidadeDAOImplArq();
+    private int id=0; //utilizado para editar voos
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -62,7 +63,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
             linha[2] = voo.getCidade_embarque().getId();
             linha[3] = voo.getCidade_desembarque().getId();
             linha[4] = voo.getData().get(Calendar.DAY_OF_MONTH) + "/" + voo.getData().get(Calendar.MONTH) + "/" + voo.getData().get(Calendar.YEAR);
-            linha[5] = voo.getData().get(Calendar.HOUR) + ":" + voo.getData().get(Calendar.MINUTE);
+            linha[5] = voo.getData().get(Calendar.HOUR_OF_DAY) + ":" + voo.getData().get(Calendar.MINUTE);
             linha[6] = voo.getDuracao();
             linha[7] = "0";
             modeloTabela.addRow(linha);
@@ -153,9 +154,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jLabelDuracao = new javax.swing.JLabel();
         jButtonSalvar = new javax.swing.JButton();
         jTextFieldDuracao = new javax.swing.JTextField();
+        jButtonExcluir = new javax.swing.JButton();
+        jButtonEditar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1000, 700));
 
         jTableAvioes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -164,8 +166,21 @@ public class JFramePrincipal extends javax.swing.JFrame {
             new String [] {
                 "Id", "Nome"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableAvioes.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(jTableAvioes);
+        if (jTableAvioes.getColumnModel().getColumnCount() > 0) {
+            jTableAvioes.getColumnModel().getColumn(0).setResizable(false);
+            jTableAvioes.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         jTableCidadeEm.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -183,7 +198,12 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTableCidadeEm.getTableHeader().setReorderingAllowed(false);
         jScrollPane5.setViewportView(jTableCidadeEm);
+        if (jTableCidadeEm.getColumnModel().getColumnCount() > 0) {
+            jTableCidadeEm.getColumnModel().getColumn(0).setResizable(false);
+            jTableCidadeEm.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         jTableCidadeDes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -192,8 +212,20 @@ public class JFramePrincipal extends javax.swing.JFrame {
             new String [] {
                 "Id", "Nome"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane6.setViewportView(jTableCidadeDes);
+        if (jTableCidadeDes.getColumnModel().getColumnCount() > 0) {
+            jTableCidadeDes.getColumnModel().getColumn(0).setResizable(false);
+            jTableCidadeDes.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         jLabelAvioes.setText("Selecione um Avião");
 
@@ -231,24 +263,38 @@ public class JFramePrincipal extends javax.swing.JFrame {
         });
 
         jButtonLimpar.setText("Limpar Campos");
+        jButtonLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLimparActionPerformed(evt);
+            }
+        });
 
         jTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id do voo", "Id do Avião", "Id do Embarque", "Id do Desembarque", "Data", "Horário", "Duração", "Válidade"
+                "Id Voo", "Id Avião", "Id Embarque", "Id Desembarque", "Data", "Horário", "Duração", "válido"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, false, false, false, false, true
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        jTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable);
+        if (jTable.getColumnModel().getColumnCount() > 0) {
+            jTable.getColumnModel().getColumn(2).setResizable(false);
+            jTable.getColumnModel().getColumn(3).setResizable(false);
+            jTable.getColumnModel().getColumn(4).setResizable(false);
+            jTable.getColumnModel().getColumn(5).setResizable(false);
+            jTable.getColumnModel().getColumn(6).setResizable(false);
+            jTable.getColumnModel().getColumn(7).setResizable(false);
+        }
 
         jLabel1.setText("Informações sobre o Voo:");
 
@@ -270,6 +316,22 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jTextFieldDuracao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldDuracaoActionPerformed(evt);
+            }
+        });
+
+        jButtonExcluir.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButtonExcluir.setText("Excluir");
+        jButtonExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExcluirActionPerformed(evt);
+            }
+        });
+
+        jButtonEditar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButtonEditar.setText("Editar");
+        jButtonEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEditarActionPerformed(evt);
             }
         });
 
@@ -301,44 +363,53 @@ public class JFramePrincipal extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabelCidadeDes)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel1))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(150, 150, 150)
-                                        .addComponent(jButtonLimpar))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(49, 49, 49)
-                                                .addComponent(jLabelData)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jTextFieldDia, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jLabel3)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jTextFieldMes, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                .addGap(126, 126, 126)
-                                                .addComponent(jLabelHorario)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jTextFieldHora, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel5)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel4)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jTextFieldAno, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(jTextFieldMinuto, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                    .addGap(126, 126, 126)
+                                                    .addComponent(jLabelHorario)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(jTextFieldHora, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(jLabel5))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(49, 49, 49)
+                                                    .addComponent(jLabelData)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(jTextFieldDia, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(jLabel3)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(jTextFieldMes, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(jLabel4)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(jTextFieldAno, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(jTextFieldMinuto, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addGap(131, 131, 131)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(jLabel1)
+                                                    .addGap(61, 61, 61))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(jButtonSalvar)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(jButtonLimpar)
+                                                    .addGap(8, 8, 8))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(jButtonEditar)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(jButtonExcluir)))))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(138, 138, 138)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jButtonSalvar)
-                                            .addComponent(jLabelDuracao))
+                                        .addComponent(jLabelDuracao)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextFieldDuracao, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                        .addComponent(jTextFieldDuracao, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(70, 70, 70))))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 970, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -396,17 +467,24 @@ public class JFramePrincipal extends javax.swing.JFrame {
                             .addComponent(jLabelDuracao)
                             .addComponent(jTextFieldDuracao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jButtonSalvar)
-                        .addGap(19, 19, 19)
-                        .addComponent(jButtonLimpar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonEditAvioes)
-                    .addComponent(jButtonAtualizar)
-                    .addComponent(jButtonEditCidade))
-                .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonSalvar)
+                            .addComponent(jButtonLimpar))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonEditAvioes)
+                            .addComponent(jButtonAtualizar)
+                            .addComponent(jButtonEditCidade))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 19, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonExcluir)
+                            .addComponent(jButtonEditar))
+                        .addGap(17, 17, 17)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(19, 19, 19))
         );
 
         pack();
@@ -466,7 +544,16 @@ public class JFramePrincipal extends javax.swing.JFrame {
         v.setDuracao(duracao);
         
         if ((linhaA & linhaCE & linhaCD) != -1 ){
-            vooBanco.salvar(v);
+            //System.out.println(v.getId());
+            if(id!=0){
+                v.setId(id);
+                id=0;
+                vooBanco.editar(v);
+            } else{
+                vooBanco.salvar(v);             
+            }
+
+            jButtonLimparActionPerformed( evt);
         }
         carregarTabelaVoo();
     }//GEN-LAST:event_jButtonSalvarActionPerformed
@@ -474,6 +561,70 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private void jTextFieldDuracaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDuracaoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldDuracaoActionPerformed
+
+    private void jButtonLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimparActionPerformed
+        jTextFieldAno.setText("");
+        jTextFieldDia.setText("");
+        jTextFieldDuracao.setText("");
+        jTextFieldHora.setText("");
+        jTextFieldMes.setText("");
+        jTextFieldMinuto.setText("");
+        jTableAvioes.clearSelection();
+        jTableCidadeEm.clearSelection();
+        jTableCidadeDes.clearSelection();
+    }//GEN-LAST:event_jButtonLimparActionPerformed
+
+    private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
+        int[] linha = jTable.getSelectedRows();
+        for (int pos: linha) {
+            int id = (int) jTable.getValueAt(pos, 0);
+            vooBanco.excluir(id);
+        }
+        carregarTabelaVoo();
+    }//GEN-LAST:event_jButtonExcluirActionPerformed
+
+    private void jButtonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarActionPerformed
+        Voo v= new Voo();
+        int linha= jTable.getSelectedRow(); //Pega o id da linha selecionada na tabela de voos
+        int id; 
+        if (linha!=-1){
+            id =(int) jTable.getValueAt(linha, 0); //id do voo
+            
+            for(int i=0;i<jTableAvioes.getRowCount();i++){ //Procura na tabla de aviões o avião com id igual ao do voo selecionada
+                int idA = (int)jTableAvioes.getValueAt(i, 0);
+                if(vooBanco.procurar_por_id(id).getAviao().getId()==idA){
+                    linha = i; //A variavel linha é reutilizada para armazenar a posição que o avião está na tabela de aviões
+                    break;
+                }
+            }
+            jTableAvioes.setRowSelectionInterval(linha, linha); //Seleciona o`Voo correto na tabela de aviões
+           
+            for(int i=0;i<jTableCidadeEm.getRowCount();i++){ //Procura na tabla de cidades de embarque a cidade com id igual ao do voo selecionada
+                int idE = (int)jTableCidadeEm.getValueAt(i, 0);
+                if(vooBanco.procurar_por_id(id).getCidade_embarque().getId()==idE){
+                    linha = i; //A variavel linha é reutilizada para armazenar a posição que a cidade está na tabela de cidade de embarque
+                    break;
+                }
+            }
+            jTableCidadeEm.setRowSelectionInterval(linha, linha);
+            
+            for(int i=0;i<jTableCidadeDes.getRowCount();i++){ //Procura na tabla de cidade de desembarque a cidade com id igual ao do voo selecionada
+                int idD = (int)jTableCidadeDes.getValueAt(i, 0);
+                if(vooBanco.procurar_por_id(id).getCidade_desembarque().getId()==idD){
+                    linha = i; //A variavel linha é reutilizada para armazenar a posição que a cidade está na tabela de cidade de desembarque
+                    break;
+                }
+            }
+            jTableCidadeDes.setRowSelectionInterval(linha, linha);
+            jTextFieldAno.setText(""+vooBanco.procurar_por_id(id).getData().get(Calendar.YEAR));
+            jTextFieldMes.setText(""+vooBanco.procurar_por_id(id).getData().get(Calendar.MONTH));
+            jTextFieldDia.setText(""+vooBanco.procurar_por_id(id).getData().get(Calendar.DAY_OF_MONTH));
+            jTextFieldHora.setText(""+vooBanco.procurar_por_id(id).getData().get(Calendar.HOUR_OF_DAY));
+            jTextFieldMinuto.setText(""+vooBanco.procurar_por_id(id).getData().get(Calendar.MINUTE));
+            jTextFieldDuracao.setText(""+vooBanco.procurar_por_id(id).getDuracao());
+            this.id=id;
+        }
+    }//GEN-LAST:event_jButtonEditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -516,6 +667,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonAtualizar;
     private javax.swing.JButton jButtonEditAvioes;
     private javax.swing.JButton jButtonEditCidade;
+    private javax.swing.JButton jButtonEditar;
+    private javax.swing.JButton jButtonExcluir;
     private javax.swing.JButton jButtonLimpar;
     private javax.swing.JButton jButtonSalvar;
     private javax.swing.JLabel jLabel1;

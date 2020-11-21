@@ -7,16 +7,21 @@ package projeto.de.verificação.de.voos.Telas;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import projeto.de.verificação.de.voos.Entidades.Cidade;
+import projeto.de.verificação.de.voos.Entidades.Voo;
 import projeto.de.verificação.de.voos.Persistencia.Arquivo.CidadeDAOImplArq;
+import projeto.de.verificação.de.voos.Persistencia.Arquivo.VooDAOImplArq;
 import projeto.de.verificação.de.voos.Persistencia.CidadeDAO;
+import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 
 /**
  *
  * @author rener
  */
 public class JPanelCidades extends javax.swing.JPanel {
+    private VooDAO voo_banco = new VooDAOImplArq();
     private CidadeDAO banco = new CidadeDAOImplArq();
     private int id=0;
 
@@ -64,6 +69,7 @@ public class JPanelCidades extends javax.swing.JPanel {
         jButtonEdit = new javax.swing.JButton();
         jButtonExcluir = new javax.swing.JButton();
         jLabelCidades = new javax.swing.JLabel();
+        jButtonSalvar1 = new javax.swing.JButton();
 
         jTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -81,7 +87,12 @@ public class JPanelCidades extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        jTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable);
+        if (jTable.getColumnModel().getColumnCount() > 0) {
+            jTable.getColumnModel().getColumn(0).setResizable(false);
+            jTable.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         jTextFieldNome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,6 +125,13 @@ public class JPanelCidades extends javax.swing.JPanel {
 
         jLabelCidades.setText("Cidades");
 
+        jButtonSalvar1.setText("Salvar");
+        jButtonSalvar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSalvar1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -138,7 +156,9 @@ public class JPanelCidades extends javax.swing.JPanel {
                         .addGap(147, 147, 147)
                         .addComponent(jLabelNome)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonSalvar1)))
                 .addContainerGap(71, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -147,8 +167,9 @@ public class JPanelCidades extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelNome))
-                .addGap(23, 23, 23)
+                    .addComponent(jLabelNome)
+                    .addComponent(jButtonSalvar1))
+                .addGap(21, 21, 21)
                 .addComponent(jLabelCidades)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -184,11 +205,27 @@ public class JPanelCidades extends javax.swing.JPanel {
 
     private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
         int[] linha = jTable.getSelectedRows();
+        List<Voo> v = voo_banco.lista_do_banco();
+        boolean alerta = false;
         //System.out.println(Arrays.toString(linha));
         for (int pos: linha) {
+            boolean existe=false;
             int id = (int) jTable.getValueAt(pos, 0);
-            //System.out.println(id);
-            banco.excluir(id);
+            for (Voo v1 : v) {
+                if(v1.getCidade_desembarque().getId()==id | v1.getCidade_embarque().getId()==id){
+                    existe=true;
+                    break;
+                }
+            }
+            if(!existe){
+                banco.excluir(id);
+            } else{
+                alerta=true;
+            }
+        }
+        if(alerta){
+            JOptionPane.showMessageDialog(null, "Não foi possivel excluir alguma cidade, delete o voo associado a ele antes!", "Atenção!", JOptionPane.ERROR_MESSAGE);
+
         }
         carregarTabela();
     }//GEN-LAST:event_jButtonExcluirActionPerformed
@@ -203,11 +240,29 @@ public class JPanelCidades extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonEditActionPerformed
 
+    private void jButtonSalvar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvar1ActionPerformed
+        Cidade c = new Cidade();
+        
+        c.setNome(jTextFieldNome.getText());
+        if (!"".equals(c.getNome())){
+            if(id!=0){
+                c.setId(id);
+                id=0;
+                banco.editar(c);
+            } else {
+                banco.salvar(c);
+            }
+        }
+        jTextFieldNome.setText("");
+        carregarTabela();
+    }//GEN-LAST:event_jButtonSalvar1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonEdit;
     private javax.swing.JButton jButtonExcluir;
     private javax.swing.JButton jButtonSalvar;
+    private javax.swing.JButton jButtonSalvar1;
     private javax.swing.JLabel jLabelCidades;
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JScrollPane jScrollPane1;

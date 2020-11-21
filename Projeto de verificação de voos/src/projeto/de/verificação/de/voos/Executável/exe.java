@@ -21,8 +21,8 @@ import projeto.de.verificação.de.voos.Telas.JFramePrincipal;
 */
 public class exe {
     public static void main(String[] args) {
-        //JFramePrincipal tela = new JFramePrincipal();
-       // tela.setVisible(true);
+        JFramePrincipal tela = new JFramePrincipal();
+        tela.setVisible(true);
 
    }
 }

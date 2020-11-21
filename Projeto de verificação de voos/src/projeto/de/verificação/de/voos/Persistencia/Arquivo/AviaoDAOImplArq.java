@@ -22,6 +22,7 @@ public class AviaoDAOImplArq implements AviaoDAO {
     
     String nome_do_arquivo = "Aviao.dat";
     List<Aviao> aviaoList = new ArrayList <>();
+
     
     private void salvarArquivo(){
         try {
@@ -110,6 +111,11 @@ public class AviaoDAOImplArq implements AviaoDAO {
     
     @Override
     public int id_disponivel(){
+        lerArquivo();
+        if(aviaoList.isEmpty()){
+            return 1;
+        }
+        
         int idmax=1;
         lerArquivo();
         for (Aviao a : aviaoList) {

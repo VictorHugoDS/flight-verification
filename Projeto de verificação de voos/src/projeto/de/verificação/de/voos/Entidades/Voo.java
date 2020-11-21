@@ -22,6 +22,7 @@ public class Voo implements Serializable {
         VooDAO banco = new VooDAOImplArq();
         id = banco.id_disponivel();   
         //data.set(Calendar.SECOND, 0);
+        
     }
 
     public int getId() {
