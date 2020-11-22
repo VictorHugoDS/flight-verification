@@ -62,8 +62,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
             linha[0] = voo.getId();
             linha[1] = voo.getAviao().getId();
             linha[2] = voo.getCidade_embarque().getId();
-            linha[3] = voo.getCidade_embarque().getNome();
-            linha[4] = voo.getCidade_desembarque().getId();
+            linha[3] = voo.getCidade_desembarque().getId();
+            linha[4] = voo.getCidade_embarque().getNome();
             linha[5] = voo.getCidade_desembarque().getNome();
             linha[6] = voo.getData().get(Calendar.DAY_OF_MONTH) + "/" + (voo.getData().get(Calendar.MONTH)+1) + "/" + voo.getData().get(Calendar.YEAR);
             linha[7] = voo.getData().get(Calendar.HOUR_OF_DAY) + ":" + voo.getData().get(Calendar.MINUTE);
@@ -276,7 +276,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id Voo", "Id Avião", "Id Embarque", "Nome Embarque", "Id Desembarque", "Nome Desembarque", "Data", "Hora", "Duração"
+                "Id Voo", "Id Avião", "Id Embarque", "Id desembarque", "Nome Embarque", "Nome Desembarque", "Data", "Hora", "Duração"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -537,41 +537,46 @@ public class JFramePrincipal extends javax.swing.JFrame {
             id_da_tabela = (int)jTableCidadeDes.getValueAt(linhaCD, 0);
             v.setCidade_desembarque(cidadeBanco.procurar_por_id(id_da_tabela));
         }
-        int minuto = Integer.parseInt(jTextFieldMinuto.getText());
-        int hora = Integer.parseInt(jTextFieldHora.getText());
-        int dia = Integer.parseInt(jTextFieldDia.getText());
-        int mes = Integer.parseInt(jTextFieldMes.getText())-1;
-        int ano = Integer.parseInt(jTextFieldAno.getText());
-        
-        Calendar c = new GregorianCalendar(ano,mes,dia,hora,minuto,0);
-        v.setData(c);
-        int duracao = Integer.parseInt(jTextFieldDuracao.getText());
-        v.setDuracao(duracao);
-        
-        if ((linhaA & linhaCE & linhaCD) != -1 ){
-            //System.out.println(v.getId());
-            if(id!=0){
-                v.setId(id);
-                id=0;
-                vooBanco.editar(v);
-            } else{
-                if(v.getAviao()!=null & v.getCidade_desembarque()!=null & v.getCidade_embarque()!=null){
-                    if(!vooBanco.verificarValidade(v)){
-                        String mensagem = "Voo inválido, verefique se o avião: " +v.getAviao().getNome()+ " de id: "+v.getAviao().getId()+" está de acordo com as regras de cadastro de um novo voo ";
-                        JOptionPane.showMessageDialog(null, mensagem, "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
+        try{
+            int minuto = Integer.parseInt(jTextFieldMinuto.getText());
+            int hora = Integer.parseInt(jTextFieldHora.getText());
+            int dia = Integer.parseInt(jTextFieldDia.getText());
+            int mes = Integer.parseInt(jTextFieldMes.getText())-1;
+            int ano = Integer.parseInt(jTextFieldAno.getText());
+
+            Calendar c = new GregorianCalendar(ano,mes,dia,hora,minuto,0);
+            v.setData(c);
+            int duracao = Integer.parseInt(jTextFieldDuracao.getText());
+            v.setDuracao(duracao);
+
+            if ((linhaA & linhaCE & linhaCD) != -1 ){
+                //System.out.println(v.getId());
+                if(id!=0){
+                    v.setId(id);
+                    id=0;
+                    vooBanco.editar(v);
+                } else{
+                    if(v.getAviao()!=null & v.getCidade_desembarque()!=null & v.getCidade_embarque()!=null){
+                        if(!vooBanco.verificarValidade(v)){
+                            String mensagem = "Voo inválido, verefique se o avião: " +v.getAviao().getNome()+ " de id: "+v.getAviao().getId()+" está de acordo com as regras de cadastro de um novo voo ";
+                            JOptionPane.showMessageDialog(null, mensagem, "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            vooBanco.salvar(v);  
+                            jButtonLimparActionPerformed( evt);
+                        }
+
+
+
                     } else {
-                        vooBanco.salvar(v);  
-                        jButtonLimparActionPerformed( evt);
+                        JOptionPane.showMessageDialog(null, "Alguma tabela não foi selecionada", "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
+
                     }
-
-
-                    
-                } else {
-                    JOptionPane.showMessageDialog(null, "Alguma tabela não foi selecionada", "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
-
                 }
             }
+        } catch (java.lang.NumberFormatException ex){
+            JOptionPane.showMessageDialog(null, "Algum Campo não foi preenchido devidamente", "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
         }
+        
         carregarTabelaVoo();
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 

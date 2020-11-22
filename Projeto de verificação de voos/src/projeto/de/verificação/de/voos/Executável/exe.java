@@ -22,26 +22,28 @@ import projeto.de.verificação.de.voos.Telas.JFramePrincipal;
 */
 public class exe {
     public static void main(String[] args) {
-        //JFramePrincipal tela = new JFramePrincipal();
-        //tela.setVisible(true);
-        ArrayList<Voo> lista = new ArrayList<>();
-        VooDAO banco= new VooDAOImplArq();
-        
-        /*Voo v1 =new Voo();
-        Voo v2 =new Voo();
-        Aviao a1 = new Aviao();
-        Aviao a2 = new Aviao();
-        
-        a1.setId(5);
-        a2.setId(1);
-        v1.setId(0);
-        v2.setId(1);
-        v1.setAviao(a1);
-        v2.setAviao(a2);
-        lista.add(v1);
-        lista = v2.addVooEmOrdem(v2, lista);
-        System.out.println(v1.getId() + "/" +v2.getId());
-        System.out.println(lista.get(0).getId() + "/" +lista.get(1).getId());*/
+         try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(JFramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new JFramePrincipal().setVisible(true);
+                
+            }
+        });
         
    }
 }
