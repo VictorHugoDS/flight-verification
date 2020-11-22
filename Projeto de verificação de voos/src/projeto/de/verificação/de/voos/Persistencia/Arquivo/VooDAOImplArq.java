@@ -149,12 +149,14 @@ public class VooDAOImplArq implements VooDAO {
                 } else{
                     if(atual.getAviao().getId()==v.getAviao().getId()){   //Verifica se o Id do avião atual da lsita é igual(==) ao id do avião de v
                         if(i==0){
-                            if(atual.getData().before(v.getData())){
-                                lista.add(v);
+                            if(atual.getData().after(v.getData())){
+                                lista.add(i, v);
                                 break;
-                            } else{
-                                lista.add(i,v);
-                                break;
+                            } else {
+                                if(i==lista.size()-1){ //Verefica se a lista possui somente 1 elemento
+                                    lista.add(v);
+                                    break;
+                                }
                             }
                         } else {
                             if(i==lista.size()-1){  //Verefica se está no final da lista
@@ -205,7 +207,7 @@ public class VooDAOImplArq implements VooDAO {
                 if(prox.getAviao().getId()!=v.getAviao().getId()){
                     return true;
                 } else {
-                    if(v.getCidade_desembarque()==prox.getCidade_embarque()){
+                    if(v.getCidade_desembarque().getId()!=prox.getCidade_embarque().getId()){
                         return false;
                     } else{
                         Calendar data_v = new GregorianCalendar();
@@ -218,7 +220,7 @@ public class VooDAOImplArq implements VooDAO {
         } else {
             if (i==vooList.size()-1){
                 ant = vooList.get(i-1);
-                if(ant.getAviao().getId()==v.getAviao().getId()){
+                if(ant.getAviao().getId()!=v.getAviao().getId()){
                     return true;
                 } else {
                         Calendar data_ant = new GregorianCalendar();
@@ -230,7 +232,7 @@ public class VooDAOImplArq implements VooDAO {
                 ant = vooList.get(i-1);
                 prox = vooList.get(i+1);
                 if(ant.getAviao().getId()==v.getAviao().getId() & v.getAviao().getId()!=prox.getAviao().getId()){
-                    if(ant.getCidade_desembarque()==v.getCidade_embarque()){
+                    if(ant.getCidade_desembarque().getId()!=v.getCidade_embarque().getId()){
                         return false;
                     } else {
                         Calendar data_ant = new GregorianCalendar();
@@ -240,7 +242,7 @@ public class VooDAOImplArq implements VooDAO {
                     }
                 } else {
                     if(ant.getAviao().getId()!= v.getAviao().getId() & v.getAviao().getId() == prox.getAviao().getId()){
-                        if(v.getCidade_desembarque()==prox.getCidade_embarque()){
+                        if(v.getCidade_desembarque().getId()!=prox.getCidade_embarque().getId()){
                             return false;
                         } else {
                             Calendar data_v = new GregorianCalendar();

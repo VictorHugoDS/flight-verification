@@ -58,15 +58,16 @@ public class JFramePrincipal extends javax.swing.JFrame {
         }
         for (int i=0;i<lista.size();i++){
             Voo voo = lista.get(i);
-            Object[] linha = new Object[8];
+            Object[] linha = new Object[9];
             linha[0] = voo.getId();
             linha[1] = voo.getAviao().getId();
             linha[2] = voo.getCidade_embarque().getId();
-            linha[3] = voo.getCidade_desembarque().getId();
-            linha[4] = voo.getData().get(Calendar.DAY_OF_MONTH) + "/" + voo.getData().get(Calendar.MONTH) + "/" + voo.getData().get(Calendar.YEAR);
-            linha[5] = voo.getData().get(Calendar.HOUR_OF_DAY) + ":" + voo.getData().get(Calendar.MINUTE);
-            linha[6] = voo.getDuracao();
-            linha[7] = "0";
+            linha[3] = voo.getCidade_embarque().getNome();
+            linha[4] = voo.getCidade_desembarque().getId();
+            linha[5] = voo.getCidade_desembarque().getNome();
+            linha[6] = voo.getData().get(Calendar.DAY_OF_MONTH) + "/" + (voo.getData().get(Calendar.MONTH)+1) + "/" + voo.getData().get(Calendar.YEAR);
+            linha[7] = voo.getData().get(Calendar.HOUR_OF_DAY) + ":" + voo.getData().get(Calendar.MINUTE);
+            linha[8] = voo.getDuracao();
             modeloTabela.addRow(linha);
         }
     }
@@ -275,11 +276,11 @@ public class JFramePrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id Voo", "Id Avião", "Id Embarque", "Id Desembarque", "Data", "Horário", "Duração", "válido"
+                "Id Voo", "Id Avião", "Id Embarque", "Nome Embarque", "Id Desembarque", "Nome Desembarque", "Data", "Hora", "Duração"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -289,12 +290,15 @@ public class JFramePrincipal extends javax.swing.JFrame {
         jTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable);
         if (jTable.getColumnModel().getColumnCount() > 0) {
+            jTable.getColumnModel().getColumn(0).setResizable(false);
+            jTable.getColumnModel().getColumn(1).setResizable(false);
             jTable.getColumnModel().getColumn(2).setResizable(false);
             jTable.getColumnModel().getColumn(3).setResizable(false);
             jTable.getColumnModel().getColumn(4).setResizable(false);
             jTable.getColumnModel().getColumn(5).setResizable(false);
             jTable.getColumnModel().getColumn(6).setResizable(false);
             jTable.getColumnModel().getColumn(7).setResizable(false);
+            jTable.getColumnModel().getColumn(8).setResizable(false);
         }
 
         jLabel1.setText("Informações sobre o Voo:");
@@ -553,7 +557,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
             } else{
                 if(v.getAviao()!=null & v.getCidade_desembarque()!=null & v.getCidade_embarque()!=null){
                     if(!vooBanco.verificarValidade(v)){
-                        JOptionPane.showMessageDialog(null, "Voo inválido", "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
+                        String mensagem = "Voo inválido, verefique se o avião: " +v.getAviao().getNome()+ " de id: "+v.getAviao().getId()+" está de acordo com as regras de cadastro de um novo voo ";
+                        JOptionPane.showMessageDialog(null, mensagem, "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
                     } else {
                         vooBanco.salvar(v);  
                         jButtonLimparActionPerformed( evt);
