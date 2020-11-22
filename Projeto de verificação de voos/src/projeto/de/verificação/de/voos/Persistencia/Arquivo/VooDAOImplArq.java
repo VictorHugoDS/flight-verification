@@ -19,11 +19,17 @@ import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 * @author Victor Hugo Duarte Da Silva
 */
 
+
 public class VooDAOImplArq implements VooDAO {
     
     String nome_do_arquivo = "Voo.dat";
     ArrayList<Voo> vooList = new ArrayList <>();
     
+    /** Abre um arquivo e salva a vooList nele
+     *
+     *@throws FileNotFoundException
+     *@throws IOException
+     */
     private void salvarArquivo(){
         try {
             ObjectOutputStream in;
@@ -37,6 +43,11 @@ public class VooDAOImplArq implements VooDAO {
         }
     }
     
+    /** Abre um arquivo e copia todos os objetos salvo nele para a lista vooList
+     *
+     *@throws IOException
+     *@throws ClassNotFoundException
+     */
     private void lerArquivo(){
         try {
             ObjectInputStream out;
@@ -127,7 +138,12 @@ public class VooDAOImplArq implements VooDAO {
         }
         return idmax+1;    
     }
-    
+    /**Recebe uma Voo e uma ArrayList para incluir esse voo na posição correta desta lista. Essa posição tem como chave os ids dos Aviões associados a esses Voos, depois, é considerado a data dos voos para inserir o Voo na ArrayList. 
+     *
+     * @return ArrayList&ltVoo&gt
+     * @param v
+     * @param lista
+     */
     private ArrayList<Voo> addVooEmOrdem(Voo v,ArrayList<Voo> lista){
         Voo atual = new Voo();
         
@@ -167,7 +183,7 @@ public class VooDAOImplArq implements VooDAO {
                             }
                             
                         } else {
-                            if(i==lista.size()-1){  //Verefica se está no final da lista
+                            if(i==lista.size()-1 ){  //Verefica se está no final da lista
                                 if(v.getData().after(atual.getData())){
                                     lista.add(v);
                                     break;
@@ -188,6 +204,14 @@ public class VooDAOImplArq implements VooDAO {
                                            break;
                                        }
                                    }   
+                                } else {
+                                    if(atual.getData().after(v.getData())){
+                                        lista.add(i, v);
+                                        break;
+                                    } else {
+                                        lista.add(i+1, v);
+                                        break;
+                                    }
                                 }
                         }
                         }
@@ -246,25 +270,27 @@ public class VooDAOImplArq implements VooDAO {
                 prox = vooList.get(i+1);
                 if(ant.getAviao().getId()==v.getAviao().getId() & v.getAviao().getId()!=prox.getAviao().getId()){
                     if(ant.getCidade_desembarque().getId()!=v.getCidade_embarque().getId()){
-                        return false;
+                        System.out.println("s");return false;
                     } else {
                         Calendar data_ant = new GregorianCalendar();
                         data_ant= (Calendar)ant.getData().clone();
                         data_ant.add(Calendar.HOUR_OF_DAY, ant.getDuracao());
-                        return !data_ant.after(v.getData());
+                        System.out.println("w");return !data_ant.after(v.getData());
                     }
                 } else {
                     if(ant.getAviao().getId()!= v.getAviao().getId() & v.getAviao().getId() == prox.getAviao().getId()){
                         if(v.getCidade_desembarque().getId()!=prox.getCidade_embarque().getId()){
-                            return false;
+                            System.out.println("x");return false;
+                            
                         } else {
+                            System.out.println("y");
                             Calendar data_v = new GregorianCalendar();
                             data_v=  (Calendar)v.getData().clone();
                             data_v.add(Calendar.HOUR_OF_DAY, v.getDuracao());
                             return !data_v.after(prox.getData());
                         }
                     }
-                } return !(ant.getAviao().getId()==v.getAviao().getId() & v.getAviao().getId()==prox.getAviao().getId());
+                } System.out.println("z");return !(ant.getAviao().getId()==v.getAviao().getId() & v.getAviao().getId()==prox.getAviao().getId());
             }
         }
     }

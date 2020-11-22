@@ -16,14 +16,14 @@ import projeto.de.verificação.de.voos.Persistencia.Arquivo.VooDAOImplArq;
 import projeto.de.verificação.de.voos.Persistencia.CidadeDAO;
 import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 
-/**
+/**Tela para Criação, Edição e Exclusão de Objetos da Classe Cidades
  *
- * @author rener
+ * @author Victor Hugo Duarte
  */
 public class JPanelCidades extends javax.swing.JPanel {
     private VooDAO voo_banco = new VooDAOImplArq();
     private CidadeDAO banco = new CidadeDAOImplArq();
-    private int id=0;
+    private int id=0; //utilizado para a edição de Cidades
 
     /**
      * Creates new form JPanelCidades
@@ -33,6 +33,10 @@ public class JPanelCidades extends javax.swing.JPanel {
         carregarTabela();
     }
     
+    /**Método que carrega a tabela de Cidades
+     *
+     * 
+     */
     private void carregarTabela(){
         List<Cidade> lista = banco.lista_do_banco();
         DefaultTableModel modeloTabela = (DefaultTableModel) jTable.getModel();
@@ -49,7 +53,6 @@ public class JPanelCidades extends javax.swing.JPanel {
             linha[1] = cidade.getNome();
             modeloTabela.addRow(linha);
         }
-        //System.out.println(id);
     }
 
     /**
@@ -186,6 +189,10 @@ public class JPanelCidades extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldNomeActionPerformed
 
+    /**Cria um objeto da Classe cidade.Se ele já existir no banco, será realizado uma edição. Senão, um salvamento.
+     *
+     * @param evt
+     */
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
         Cidade c = new Cidade();
         
@@ -202,12 +209,15 @@ public class JPanelCidades extends javax.swing.JPanel {
         jTextFieldNome.setText("");
         carregarTabela();
     }//GEN-LAST:event_jButtonSalvarActionPerformed
-
+    
+    /**Exclui um determinado elemento do Banco de dados com base em qual elemento está selecionado na tabela de Cidades
+     *
+     * @param evt
+     */
     private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
         int[] linha = jTable.getSelectedRows();
         List<Voo> v = voo_banco.lista_do_banco();
         boolean alerta = false;
-        //System.out.println(Arrays.toString(linha));
         for (int pos: linha) {
             boolean existe=false;
             int id = (int) jTable.getValueAt(pos, 0);
@@ -230,6 +240,10 @@ public class JPanelCidades extends javax.swing.JPanel {
         carregarTabela();
     }//GEN-LAST:event_jButtonExcluirActionPerformed
 
+    /**Transfere para o jtextFieldName o nome armazenado no banco e altera a variavel id para que o método de salvamento possa ser realizado de maneira correta
+     *
+     * @param evt
+     */
     private void jButtonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditActionPerformed
         int linha= jTable.getSelectedRow();
         if (linha!=-1){
@@ -240,6 +254,10 @@ public class JPanelCidades extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonEditActionPerformed
 
+    /**Copia do método do Botão Salvar, foi criado para permitir a flexibilidade de poder se escolher qual botão apertar. Assim como o outro, cria um objeto da Classe cidade.Se ele já existir no banco, será realizado uma edição. Senão, um salvamento.
+     *
+     * @param evt
+     */
     private void jButtonSalvar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvar1ActionPerformed
         Cidade c = new Cidade();
         

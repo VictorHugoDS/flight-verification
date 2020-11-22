@@ -21,6 +21,11 @@ public class CidadeDAOImplArq implements CidadeDAO {
     String nome_do_arquivo = "Cidade.dat";
     List<Cidade> cidadeList = new ArrayList <>();
     
+    /** Abre um arquivo e salva a cidadeList nele
+     *
+     *@throws FileNotFoundException
+     *@throws IOException
+     */
     private void salvarArquivo(){
         try {
             ObjectOutputStream in;
@@ -33,7 +38,11 @@ public class CidadeDAOImplArq implements CidadeDAO {
             Logger.getLogger(CidadeDAOImplArq.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /** Abre um arquivo e copia todos os objetos salvo nele para a lista cidadeList
+     *
+     *@throws IOException
+     *@throws ClassNotFoundException
+     */
     private void lerArquivo(){
         try {
             ObjectInputStream out;

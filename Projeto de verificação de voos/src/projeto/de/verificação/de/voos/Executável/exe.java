@@ -17,7 +17,7 @@ import projeto.de.verificação.de.voos.Persistencia.CidadeDAO;
 import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 import projeto.de.verificação.de.voos.Telas.JFramePrincipal;
 
-/**Classe executável utilizada para testes.
+/**Classe executável para iniciar o Jframe principal e para executar alguns testes no sistema.
 * @author Victor Hugo Duarte Da Silva
 */
 public class exe {

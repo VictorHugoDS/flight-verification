@@ -16,14 +16,14 @@ import projeto.de.verificação.de.voos.Persistencia.Arquivo.VooDAOImplArq;
 import projeto.de.verificação.de.voos.Persistencia.AviaoDAO;
 import projeto.de.verificação.de.voos.Persistencia.VooDAO;
 
-/**
+/**Tela para Criação, Edição e Exclusão de Objetos da Classe Aviões
  *
- * @author rener
+ * @author Victor Hugo Duarte
  */
 public class JPanelAviao extends javax.swing.JPanel {
     private VooDAO voo_banco = new VooDAOImplArq();
     private AviaoDAO aviao_banco = new AviaoDAOImplArq();
-    private int id;
+    private int id=0; //Usado pelo método editar
     /**
      * Creates new form JPanelAviao
      */
@@ -32,6 +32,10 @@ public class JPanelAviao extends javax.swing.JPanel {
         carregarTabela();
     }
 
+    /**Método que carrega a tabela de Cidades
+     *
+     * 
+     */
     private void carregarTabela(){
         List<Aviao> lista = aviao_banco.lista_do_banco();
         DefaultTableModel modeloTabela = (DefaultTableModel) jTable.getModel();
@@ -48,7 +52,6 @@ public class JPanelAviao extends javax.swing.JPanel {
             linha[1] = aviao.getNome();
             modeloTabela.addRow(linha);
         }
-        //System.out.println(id);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -186,6 +189,10 @@ public class JPanelAviao extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldNomeActionPerformed
 
+    /**Cria um objeto da Classe Aviões.Se ele já existir no banco, será realizado uma edição. Senão, um salvamento.
+     *
+     * @param evt
+     */
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
         Aviao a = new Aviao();
 
@@ -203,6 +210,10 @@ public class JPanelAviao extends javax.swing.JPanel {
         carregarTabela();
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
+    /**Transfere para o jtextFieldName o nome armazenado no banco e altera a variavel id para que o método de salvamento possa ser realizado de maneira correta
+     *
+     * @param evt
+     */
     private void jButtonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditActionPerformed
         int linha= jTable.getSelectedRow();
         if (linha!=-1){
@@ -212,6 +223,10 @@ public class JPanelAviao extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonEditActionPerformed
 
+    /**Exclui um determinado elemento do Banco de dados com base em qual elemento está selecionado na tabela de Aviões
+     *
+     * @param evt
+     */
     private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
         int[] linha = jTable.getSelectedRows();
         ArrayList<Voo> v = voo_banco.lista_do_banco();
@@ -239,6 +254,10 @@ public class JPanelAviao extends javax.swing.JPanel {
         carregarTabela();
     }//GEN-LAST:event_jButtonExcluirActionPerformed
 
+    /**Copia do método do Botão Salvar, foi criado para permitir a flexibilidade de poder se escolher qual botão apertar. Assim como o outro, cria um objeto da Classe Aviao.Se ele já existir no banco, será realizado uma edição. Senão, um salvamento.
+     *
+     * @param evt
+     */
     private void jButtonSalvar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvar1ActionPerformed
         Aviao a = new Aviao();
 

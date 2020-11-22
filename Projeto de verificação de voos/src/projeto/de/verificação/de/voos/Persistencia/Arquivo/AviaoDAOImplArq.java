@@ -23,7 +23,11 @@ public class AviaoDAOImplArq implements AviaoDAO {
     String nome_do_arquivo = "Aviao.dat";
     List<Aviao> aviaoList = new ArrayList <>();
 
-    
+    /** Abre um arquivo e salva a aviaoList nele
+     *
+     *@throws FileNotFoundException
+     *@throws IOException
+     */
     private void salvarArquivo(){
         try {
             ObjectOutputStream in;
@@ -37,6 +41,11 @@ public class AviaoDAOImplArq implements AviaoDAO {
         }
     }
     
+    /** Abre um arquivo e copia todos os objetos salvo nele para a lista aviaoList
+     *
+     *@throws IOException
+     *@throws ClassNotFoundException
+     */
     private void lerArquivo(){
         try {
             ObjectInputStream out;
