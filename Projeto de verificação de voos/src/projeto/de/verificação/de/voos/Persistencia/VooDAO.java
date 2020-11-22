@@ -18,4 +18,7 @@ public interface VooDAO {
     public List<Voo> lista_do_banco();
     
     public int id_disponivel();
+    
+    public boolean verificarValidade(Voo v);
+    
 }

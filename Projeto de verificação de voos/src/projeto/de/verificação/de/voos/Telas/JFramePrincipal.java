@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import projeto.de.verificação.de.voos.Entidades.Aviao;
 import projeto.de.verificação.de.voos.Entidades.Cidade;
@@ -535,7 +536,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
         int minuto = Integer.parseInt(jTextFieldMinuto.getText());
         int hora = Integer.parseInt(jTextFieldHora.getText());
         int dia = Integer.parseInt(jTextFieldDia.getText());
-        int mes = Integer.parseInt(jTextFieldMes.getText());
+        int mes = Integer.parseInt(jTextFieldMes.getText())-1;
         int ano = Integer.parseInt(jTextFieldAno.getText());
         
         Calendar c = new GregorianCalendar(ano,mes,dia,hora,minuto,0);
@@ -550,10 +551,21 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 id=0;
                 vooBanco.editar(v);
             } else{
-                vooBanco.salvar(v);             
-            }
+                if(v.getAviao()!=null & v.getCidade_desembarque()!=null & v.getCidade_embarque()!=null){
+                    if(!vooBanco.verificarValidade(v)){
+                        JOptionPane.showMessageDialog(null, "Voo inválido", "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        vooBanco.salvar(v);  
+                        jButtonLimparActionPerformed( evt);
+                    }
 
-            jButtonLimparActionPerformed( evt);
+
+                    
+                } else {
+                    JOptionPane.showMessageDialog(null, "Alguma tabela não foi selecionada", "Erro ao salvar!", JOptionPane.ERROR_MESSAGE);
+
+                }
+            }
         }
         carregarTabelaVoo();
     }//GEN-LAST:event_jButtonSalvarActionPerformed
