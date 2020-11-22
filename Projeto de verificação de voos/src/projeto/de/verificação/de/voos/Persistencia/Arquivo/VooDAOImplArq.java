@@ -103,7 +103,7 @@ public class VooDAOImplArq implements VooDAO {
     }
 
     @Override
-    public List<Voo> lista_do_banco() {
+    public ArrayList<Voo> lista_do_banco() {
        lerArquivo();
        return vooList;    
     }
@@ -149,15 +149,23 @@ public class VooDAOImplArq implements VooDAO {
                 } else{
                     if(atual.getAviao().getId()==v.getAviao().getId()){   //Verifica se o Id do avião atual da lsita é igual(==) ao id do avião de v
                         if(i==0){
-                            if(atual.getData().after(v.getData())){
-                                lista.add(i, v);
-                                break;
+                            if(i==lista.size()-1){
+                                if(atual.getData().after(v.getData())){
+                                  lista.add(i, v);
+                                  break;
+                              } else {
+                                  if(i==lista.size()-1){ //Verefica se a lista possui somente 1 elemento
+                                      lista.add(v);
+                                      break;
+                                  }
+                              }  
                             } else {
-                                if(i==lista.size()-1){ //Verefica se a lista possui somente 1 elemento
-                                    lista.add(v);
-                                    break;
+                                if(atual.getData().after(v.getData())){
+                                    lista.add(i, v);
+                                    break; 
                                 }
                             }
+                            
                         } else {
                             if(i==lista.size()-1){  //Verefica se está no final da lista
                                 if(v.getData().after(atual.getData())){
@@ -223,10 +231,15 @@ public class VooDAOImplArq implements VooDAO {
                 if(ant.getAviao().getId()!=v.getAviao().getId()){
                     return true;
                 } else {
+                    if(ant.getCidade_desembarque().getId()!=v.getCidade_embarque().getId()){
+                        return false;
+                    } else {
                         Calendar data_ant = new GregorianCalendar();
                         data_ant= (Calendar)ant.getData().clone();
                         data_ant.add(Calendar.HOUR_OF_DAY, ant.getDuracao());
                         return !data_ant.after(v.getData());
+                    }
+                        
                 }
             } else {
                 ant = vooList.get(i-1);

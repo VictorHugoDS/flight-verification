@@ -5,6 +5,7 @@
  */
 package projeto.de.verificação.de.voos.Telas;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -213,7 +214,7 @@ public class JPanelAviao extends javax.swing.JPanel {
 
     private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
         int[] linha = jTable.getSelectedRows();
-        List<Voo> v = voo_banco.lista_do_banco();
+        ArrayList<Voo> v = voo_banco.lista_do_banco();
         boolean alerta=false;
         //System.out.println(Arrays.toString(linha));
         for (int pos: linha) {

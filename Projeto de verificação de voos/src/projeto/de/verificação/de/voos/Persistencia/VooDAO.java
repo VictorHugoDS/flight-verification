@@ -1,5 +1,6 @@
 package projeto.de.verificação.de.voos.Persistencia;
 
+import java.util.ArrayList;
 import java.util.List;
 import projeto.de.verificação.de.voos.Entidades.Voo;
 
@@ -15,7 +16,7 @@ public interface VooDAO {
     
     public Voo procurar_por_id(int id);
     
-    public List<Voo> lista_do_banco();
+    public ArrayList<Voo> lista_do_banco();
     
     public int id_disponivel();
     
