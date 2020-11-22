@@ -275,22 +275,22 @@ public class VooDAOImplArq implements VooDAO {
                         Calendar data_ant = new GregorianCalendar();
                         data_ant= (Calendar)ant.getData().clone();
                         data_ant.add(Calendar.HOUR_OF_DAY, ant.getDuracao());
-                        System.out.println("w");return !data_ant.after(v.getData());
+                        return !data_ant.after(v.getData());
                     }
                 } else {
                     if(ant.getAviao().getId()!= v.getAviao().getId() & v.getAviao().getId() == prox.getAviao().getId()){
                         if(v.getCidade_desembarque().getId()!=prox.getCidade_embarque().getId()){
-                            System.out.println("x");return false;
+                            return false;
                             
                         } else {
-                            System.out.println("y");
+                            
                             Calendar data_v = new GregorianCalendar();
                             data_v=  (Calendar)v.getData().clone();
                             data_v.add(Calendar.HOUR_OF_DAY, v.getDuracao());
                             return !data_v.after(prox.getData());
                         }
                     }
-                } System.out.println("z");return !(ant.getAviao().getId()==v.getAviao().getId() & v.getAviao().getId()==prox.getAviao().getId());
+                } return !(ant.getAviao().getId()==v.getAviao().getId() & v.getAviao().getId()==prox.getAviao().getId());
             }
         }
     }
